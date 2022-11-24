@@ -1,0 +1,10 @@
+*.iml
+.gradle
+.DS_Store
+build
+.idea/*
+!.idea/codeStyles
+!.idea/dictionaries/project_dictionary.xml
+!.idea/inspectionProfiles
+!.idea/ktfmt.xml
+
