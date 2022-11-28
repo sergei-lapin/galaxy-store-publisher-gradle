@@ -24,7 +24,7 @@ plugins {
 }
 ```
 
-> **Supported AGP versions**
+> **Warning**  
 > Plugin supports only AGP 7.+
 
 Now you can configure credentials like this
