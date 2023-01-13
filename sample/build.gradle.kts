@@ -5,7 +5,7 @@ import com.slapin.gsp.GalaxyStorePublisherExtension
 plugins {
   alias(libs.plugins.androidApplication)
   alias(libs.plugins.kotlinAndroid)
-  id("io.github.sergei-lapin.galaxy-store-publisher")
+  id("com.sergei-lapin.galaxy-store-publisher")
 }
 
 galaxyStorePublisher {
