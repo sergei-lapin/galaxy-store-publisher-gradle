@@ -12,6 +12,7 @@ import kotlin.io.path.nameWithoutExtension
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.RegularFile
 import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
@@ -20,12 +21,15 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.options.Option
+import org.gradle.kotlin.dsl.property
 import org.gradle.work.DisableCachingByDefault
 
 @DisableCachingByDefault
 abstract class PublishToGalaxyStore
 @Inject
 constructor(
+  objectFactory: ObjectFactory,
   private val providerFactory: ProviderFactory,
 ) : DefaultTask() {
 
@@ -37,7 +41,12 @@ constructor(
 
   @get:Input abstract val appContentId: Property<String>
 
-  @get:Input abstract val apkDirPath: Property<String>
+  @Option(
+    option = "apkDirPath",
+    description = "Directory with APK to upload (variant output directory by default)",
+  )
+  @get:Internal
+  val apkDirPath: Property<String> = objectFactory.property()
 
   @get:Internal
   val privateKey: Provider<String>
