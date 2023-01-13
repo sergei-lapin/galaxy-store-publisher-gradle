@@ -71,3 +71,6 @@ You can list all registered tasks by running `./gradlew :your-app-module:tasks -
 Registered tasks are not triggering corresponding apk assembling, so you'd need to assemble target apk prior to 
 publishing task invocation.  
 This is by design, as this plugin is intended to act as a lightweight CLI.
+
+You can override directory that will be searched for APK to upload (target variant output directory by default) by 
+specifying corresponding CLI option `./gradlew :your-app-module:publish{Variant}ToGalaxyStore --apkDirPath=/apk/dir`.
