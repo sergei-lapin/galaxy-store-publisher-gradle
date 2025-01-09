@@ -9,7 +9,7 @@ plugins {
 
 group = "com.sergei-lapin.galaxy-store-publisher"
 
-version = "1.0.0-alpha03"
+version = "1.0.0"
 
 val jvmTarget = JavaVersion.VERSION_11.toString()
 
