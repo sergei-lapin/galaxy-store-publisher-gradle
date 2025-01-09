@@ -1,7 +1,6 @@
 package com.slapin.gsp
 
 import com.android.build.api.variant.ApplicationAndroidComponentsExtension
-import com.android.build.gradle.internal.tasks.BundleToApkTask
 import com.slapin.gsp.task.PublishToGalaxyStore
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -36,6 +35,9 @@ abstract class GalaxyStorePublisherPlugin : Plugin<Project> {
         )
         serviceAccountKeyFile.set(
           variantExtension.serviceAccountKeyFile.orElse(baseExtension.serviceAccountKeyFile)
+        )
+        hasToSubmitApp.set(
+          variantExtension.hasToSubmitApp.orElse(baseExtension.hasToSubmitApp)
         )
         val variantApkDirPath = buildString {
           append("outputs/apk")

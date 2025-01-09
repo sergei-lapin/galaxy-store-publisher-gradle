@@ -12,6 +12,7 @@ galaxyStorePublisher {
   appContentId.set("app-content-id")
   serviceAccountId.set("service-account-id")
   serviceAccountScopes.set(listOf("publishing"))
+  hasToSubmitApp.set(false)
 }
 
 android {

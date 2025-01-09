@@ -47,6 +47,14 @@ galaxyStorePublisher {
 
 or by setting up `SAMSUNG_SERVICE_ACCOUNT_KEY` environment variable
 
+You can submit app at the end of the process, thanks to this setting (optional):
+
+```kotlin
+galaxyStorePublisher {
+    hasToSubmitApp.set(true)
+}
+```
+
 ### Per-variant setup
 
 You can override global configuration and for some application variant set up its own set of properties like this

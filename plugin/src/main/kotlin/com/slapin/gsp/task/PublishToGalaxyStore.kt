@@ -42,6 +42,8 @@ constructor(
 
   @get:Input abstract val appContentId: Property<String>
 
+  @get:Input @get:Optional abstract val hasToSubmitApp: Property<Boolean>
+
   @Option(
     option = "apkDirPath",
     description = "Directory with APK to upload (variant output directory by default)",
@@ -118,6 +120,13 @@ constructor(
         currentContentInfo = currentContentInfo,
       )
       logger.lifecycle("Successfully registered new binary")
+    }
+
+    val hasToSubmitAppValue = hasToSubmitApp.getOrElse(false)
+    logger.lifecycle("Submitting App: $hasToSubmitAppValue")
+
+    if (hasToSubmitAppValue) {
+      samsungApiClient.submitApp(currentContentInfo)
     }
   }
 }
