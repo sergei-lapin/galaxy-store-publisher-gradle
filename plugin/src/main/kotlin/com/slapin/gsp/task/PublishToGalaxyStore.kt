@@ -111,7 +111,7 @@ constructor(
     withRetry(
       delay = Duration.ofSeconds(10),
       count = 5,
-      onFailure = { logger.error("Failed to register new binary") }
+      onFailure = { error("Failed to register new binary") }
     ) {
       samsungApiClient.registerBinaryFile(
         fileKey = uploadFileResponse.fileKey,
