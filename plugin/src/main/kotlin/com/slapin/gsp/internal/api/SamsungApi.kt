@@ -22,4 +22,9 @@ internal interface SamsungApi {
     fileKey: String,
     currentContentInfo: ContentInfo,
   ): RegisterBinaryResponse
+
+  fun submitApp(
+    currentContentInfo: ContentInfo,
+  ): Boolean
+
 }

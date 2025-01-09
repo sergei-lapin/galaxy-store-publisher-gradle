@@ -28,4 +28,9 @@ abstract class GalaxyStorePublisherExtension {
    * [Samsung Seller Portal](https://seller.samsungapps.com/content/common/summaryContentList.as))
    */
   abstract val appContentId: Property<String>
+
+  /**
+   * Has to submit app for review
+   */
+  abstract val hasToSubmitApp: Property<Boolean>
 }

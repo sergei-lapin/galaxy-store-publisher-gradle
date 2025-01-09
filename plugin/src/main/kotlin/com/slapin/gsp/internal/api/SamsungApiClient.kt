@@ -107,11 +107,12 @@ internal class SamsungApiClient(
                 contentId = currentContentInfo.contentId,
                 defaultLanguageCode = currentContentInfo.defaultLanguageCode,
                 paid = currentContentInfo.paid,
-                usExportLaws = true,
+                usExportLaws = currentContentInfo.usExportLaws,
                 ageLimit = currentContentInfo.ageLimit,
                 binaryList =
                   listOf(
                     Binary(
+                      binarySeq = 1,
                       gms = currentContentInfo.binaryList.firstOrNull()?.gms ?: YesOrNo.No,
                       fileKey = fileKey,
                     ),
@@ -121,6 +122,22 @@ internal class SamsungApiClient(
         )
     response.errorMsg?.let(::error)
     response.message?.let(::error)
+    return response
+  }
+
+  override fun submitApp(
+    currentContentInfo: ContentInfo,
+  ): Boolean {
+    val response =
+    okHttpClient
+      .post<Boolean>(
+        url = "https://devapi.samsungapps.com/seller/contentSubmit",
+        body =
+        ContentId(contentId = currentContentInfo.contentId).asRequestBody(),
+      )
+    if (response.not()) {
+      logger.error("Failed to submit app")
+    }
     return response
   }
 
@@ -141,7 +158,13 @@ internal class SamsungApiClient(
         .requestBuilder()
         .post(body)
         .build()
-    return newCall(request).execute().use { response -> response.body.fromJson() }
+    return newCall(request).execute().use { response ->
+      //submit-app don't have response body so only return boolean with successful status
+      when (T::class) {
+        Boolean::class -> response.isSuccessful as T
+        else -> response.body.fromJson()
+      }
+    }
   }
 
   private inline fun <reified T : Any> OkHttpClient.get(
