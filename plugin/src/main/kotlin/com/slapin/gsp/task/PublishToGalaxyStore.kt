@@ -43,6 +43,13 @@ constructor(
   @get:Input abstract val appContentId: Property<String>
 
   @Option(
+    option = "hasToSubmitApp",
+    description = "Has to submit app for review",
+  )
+  @get:Internal
+  val hasToSubmitApp: Property<String> = objectFactory.property()
+
+  @Option(
     option = "apkDirPath",
     description = "Directory with APK to upload (variant output directory by default)",
   )
@@ -111,13 +118,20 @@ constructor(
     withRetry(
       delay = Duration.ofSeconds(10),
       count = 5,
-      onFailure = { logger.error("Failed to register new binary") }
+      onFailure = { error("Failed to register new binary") }
     ) {
       samsungApiClient.registerBinaryFile(
         fileKey = uploadFileResponse.fileKey,
         currentContentInfo = currentContentInfo,
       )
       logger.lifecycle("Successfully registered new binary")
+    }
+
+    val hasToSubmitAppValue = hasToSubmitApp.getOrElse("false")
+    logger.lifecycle("Submitting App: $hasToSubmitAppValue")
+
+    if (hasToSubmitAppValue.equals("true", ignoreCase = true)) {
+      samsungApiClient.submitApp(currentContentInfo)
     }
   }
 }

@@ -74,3 +74,6 @@ This is by design, as this plugin is intended to act as a lightweight CLI.
 
 You can override directory that will be searched for APK to upload (target variant output directory by default) by 
 specifying corresponding CLI option `./gradlew :your-app-module:publish{Variant}ToGalaxyStore --apkDirPath=/apk/dir`.
+
+You can submit app at the end of the process, by specifying corresponding CLI option 
+`./gradlew :your-app-module:publish{Variant}ToGalaxyStore --hasToSubmitApp=true`.
