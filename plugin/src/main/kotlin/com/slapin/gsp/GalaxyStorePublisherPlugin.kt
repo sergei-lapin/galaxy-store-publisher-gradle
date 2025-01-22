@@ -1,7 +1,6 @@
 package com.slapin.gsp
 
 import com.android.build.api.variant.ApplicationAndroidComponentsExtension
-import com.android.build.gradle.internal.tasks.BundleToApkTask
 import com.slapin.gsp.task.PublishToGalaxyStore
 import org.gradle.api.Plugin
 import org.gradle.api.Project
