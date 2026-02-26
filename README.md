@@ -63,14 +63,28 @@ androidComponents.onVariants { variant ->
 
 ## Publishing
 
-Once setup is finished a number of tasks will be registered, e.g. if you have only `debug` and `release` variants of your 
-application, there will be two tasks `publishDebugToGalaxyStore` and `publishReleaseToGalaxyStore`.  
+Once setup is finished a number of tasks will be registered, e.g. if you have only `debug` and `release` variants of your
+application, there will be two tasks `publishDebugToGalaxyStore` and `publishReleaseToGalaxyStore`.
 
-You can list all registered tasks by running `./gradlew :your-app-module:tasks --group="Galaxy Store Publisher"`.  
+You can list all registered tasks by running `./gradlew :your-app-module:tasks --group="Galaxy Store Publisher"`.
 
-Registered tasks are not triggering corresponding apk assembling, so you'd need to assemble target apk prior to 
-publishing task invocation.  
-This is by design, as this plugin is intended to act as a lightweight CLI.
+The plugin supports both **AAB** (Android App Bundle) and **APK** formats. When both are present, AAB takes priority.
 
-You can override directory that will be searched for APK to upload (target variant output directory by default) by 
-specifying corresponding CLI option `./gradlew :your-app-module:publish{Variant}ToGalaxyStore --apkDirPath=/apk/dir`.
+Build your app before publishing:
+
+```bash
+# AAB (recommended)
+./gradlew :your-app-module:bundleRelease
+
+# APK
+./gradlew :your-app-module:assembleRelease
+```
+
+Registered tasks do not trigger the build automatically — this is by design, as this plugin is intended to act as a lightweight CLI.
+
+You can override the directories searched for binaries using CLI options:
+
+```bash
+./gradlew :your-app-module:publish{Variant}ToGalaxyStore --bundleDirPath=/aab/dir
+./gradlew :your-app-module:publish{Variant}ToGalaxyStore --apkDirPath=/apk/dir
+```

@@ -49,6 +49,13 @@ constructor(
   @get:Internal
   val apkDirPath: Property<String> = objectFactory.property()
 
+  @Option(
+    option = "bundleDirPath",
+    description = "Directory with AAB to upload (variant output directory by default)",
+  )
+  @get:Internal
+  val bundleDirPath: Property<String> = objectFactory.property()
+
   @get:Internal
   val privateKey: Provider<String>
     get() =
@@ -57,14 +64,40 @@ constructor(
         .map(File::readText)
         .orElse(providerFactory.environmentVariable("SAMSUNG_SERVICE_ACCOUNT_KEY"))
 
+  private fun findBinary(): java.nio.file.Path {
+    if (bundleDirPath.isPresent) {
+      val bundleDir = File(bundleDirPath.get())
+      if (bundleDir.isDirectory) {
+        val aab = bundleDir.listFiles()?.firstOrNull { it.extension == "aab" }
+        if (aab != null) {
+          logger.lifecycle("Found AAB: ${aab.name}")
+          return aab.toPath()
+        }
+      }
+    }
+    if (apkDirPath.isPresent) {
+      val apkDir = File(apkDirPath.get())
+      if (apkDir.isDirectory) {
+        val apk = apkDir.listFiles()?.firstOrNull { it.extension == "apk" }
+        if (apk != null) {
+          logger.lifecycle("Found APK: ${apk.name}")
+          return apk.toPath()
+        }
+      }
+    }
+    val searched = buildList {
+      if (bundleDirPath.isPresent) add("AAB in ${bundleDirPath.get()}")
+      if (apkDirPath.isPresent) add("APK in ${apkDirPath.get()}")
+    }
+    error("No app binary (AAB or APK) found. Searched: ${searched.joinToString("; ")}")
+  }
+
   @TaskAction
   fun run() {
 
-    logger.lifecycle("Searching for APK")
+    logger.lifecycle("Searching for app binary")
 
-    val apk =
-      File(apkDirPath.get()).listFiles()?.firstOrNull { it.extension == "apk" }?.toPath()
-        ?: error("No APK found in ${apkDirPath.get()}")
+    val binary = findBinary()
 
     logger.lifecycle("Generating JWT token")
 
@@ -90,21 +123,21 @@ constructor(
 
     val uploadSession = samsungApiClient.createUploadSession()
     // Galaxy Store fails upload with the same name even though versionName/versionCode updated
-    val fixedApkName =
-      "${apk.nameWithoutExtension.replace('.', '_')}-${System.currentTimeMillis()}.${apk.extension}"
-    val fixedApk = Files.copy(apk, apk.resolveSibling(fixedApkName))
+    val fixedBinaryName =
+      "${binary.nameWithoutExtension.replace('.', '_')}-${System.currentTimeMillis()}.${binary.extension}"
+    val fixedBinary = Files.copy(binary, binary.resolveSibling(fixedBinaryName))
 
-    logger.lifecycle("Uploading $fixedApkName")
+    logger.lifecycle("Uploading $fixedBinaryName")
 
     val uploadFileResponse =
       samsungApiClient.uploadBinaryFile(
-        filePath = fixedApk.toString(),
+        filePath = fixedBinary.toString(),
         uploadSession = uploadSession,
       )
 
     logger.lifecycle("Cleaning up temporary binary")
 
-    Files.delete(fixedApk)
+    Files.delete(fixedBinary)
 
     logger.lifecycle("Registering new binary")
 

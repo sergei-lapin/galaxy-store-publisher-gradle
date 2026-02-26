@@ -1,7 +1,6 @@
 package com.slapin.gsp
 
 import com.android.build.api.variant.ApplicationAndroidComponentsExtension
-import com.android.build.gradle.internal.tasks.BundleToApkTask
 import com.slapin.gsp.task.PublishToGalaxyStore
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -43,8 +42,10 @@ abstract class GalaxyStorePublisherPlugin : Plugin<Project> {
           variant.buildType?.let { append("/$it") }
         }
         apkDirPath.set(layout.buildDirectory.dir(variantApkDirPath).map { it.asFile.path })
+        val variantBundleDirPath = "outputs/bundle/${variant.name}"
+        bundleDirPath.set(layout.buildDirectory.dir(variantBundleDirPath).map { it.asFile.path })
         group = "Galaxy Store Publisher"
-        description = "Publish ${variant.name} APK to Samsung Galaxy Store"
+        description = "Publish ${variant.name} binary to Samsung Galaxy Store"
       }
     }
   }
